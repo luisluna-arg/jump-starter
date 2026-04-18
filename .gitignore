@@ -1,0 +1,15 @@
+# Build outputs
+src/bin/
+src/obj/
+publish/
+installer/installer_output/
+
+# User-specific files
+src/JumpStarter.csproj.user
+*.user
+*.suo
+.vs/
+
+# OS
+Thumbs.db
+.DS_Store
