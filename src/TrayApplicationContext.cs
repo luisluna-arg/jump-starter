@@ -51,7 +51,9 @@ public class TrayApplicationContext : ApplicationContext
 
     private async Task RunOnStartupAsync()
     {
-        await _executor.ExecuteAllAsync();
+        var config = CommandExecutor.LoadConfig(_configPath);
+        if (config.RunOnStartup)
+            await _executor.ExecuteAllAsync();
     }
 
     private void OnRunNow(object? sender, EventArgs e)

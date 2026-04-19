@@ -1,5 +1,6 @@
 {
   "MaxConcurrentTasks": 5,
+  "RunOnStartup": true, // set to false to only run on demand
   "Commands": [
     {
       "Name": "Abrir Chrome",

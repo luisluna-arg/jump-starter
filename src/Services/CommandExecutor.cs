@@ -28,6 +28,14 @@ public class CommandExecutor
         _configPath = configPath;
     }
 
+    public static JumpStarterConfig LoadConfig(string configPath) =>
+        JsonSerializer.Deserialize<JumpStarterConfig>(File.ReadAllText(configPath), new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true,
+        }) ?? new JumpStarterConfig();
+
     public void OnStatusChanged(Action callback) => _onStatusChanged = callback;
 
     public async Task ExecuteAllAsync(CancellationToken ct = default)
