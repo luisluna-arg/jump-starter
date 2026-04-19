@@ -22,14 +22,19 @@ internal static class Program
 
         try
         {
-            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.jsonc");
             if (!File.Exists(configPath))
             {
                 Log.Fatal("appsettings.json not found at {Path}", configPath);
                 return;
             }
 
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true,
+            };
             var config = JsonSerializer.Deserialize<JumpStarterConfig>(
                 File.ReadAllText(configPath), options) ?? new JumpStarterConfig();
 

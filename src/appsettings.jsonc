@@ -5,13 +5,15 @@
       "Name": "Abrir Chrome",
       "Command": "chrome.exe https://www.google.com",
       "Delay": "00:00:00",
-      "Shell": false
+      "Shell": false,
+      "Enabled": true
     },
     {
       "Name": "Ejemplo script",
       "Command": "powershell.exe -NoProfile -Command \"Write-Output 'JumpStarter OK'\"",
       "Delay": "00:00:05",
-      "Shell": true
+      "Shell": true,
+      "Enabled": true // set to false to skip this command
     }
   ]
 }

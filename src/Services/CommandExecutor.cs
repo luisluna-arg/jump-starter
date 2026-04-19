@@ -27,13 +27,13 @@ public class CommandExecutor
     public async Task ExecuteAllAsync(CancellationToken ct = default)
     {
         _statuses.Clear();
-        foreach (var entry in _config.Commands)
+        foreach (var entry in _config.Commands.Where(e => e.Enabled))
             _statuses[entry.Name] = CommandStatus.Pending;
 
         NotifyChanged();
 
         var tasks = new List<Task>();
-        foreach (var entry in _config.Commands)
+        foreach (var entry in _config.Commands.Where(e => e.Enabled))
         {
             if (ct.IsCancellationRequested) break;
 

@@ -6,4 +6,5 @@ public class CommandEntry
     public string Command { get; set; } = string.Empty;
     public TimeSpan Delay { get; set; } = TimeSpan.Zero;
     public bool Shell { get; set; } = false;
+    public bool Enabled { get; set; } = true;
 }
