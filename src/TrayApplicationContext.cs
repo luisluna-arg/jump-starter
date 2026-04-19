@@ -31,6 +31,7 @@ public class TrayApplicationContext : ApplicationContext
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Ejecutar ahora", null, OnRunNow);
         contextMenu.Items.Add("Abrir configuración", null, OnOpenConfig);
+        contextMenu.Items.Add("Cómo usar", null, OnOpenHelp);
         contextMenu.Items.Add(new ToolStripSeparator());
         contextMenu.Items.Add(_startupMenuItem);
         contextMenu.Items.Add(new ToolStripSeparator());
@@ -67,6 +68,19 @@ public class TrayApplicationContext : ApplicationContext
         catch (Exception ex)
         {
             Serilog.Log.Error(ex, "Failed to open config file");
+        }
+    }
+
+    private void OnOpenHelp(object? sender, EventArgs e)
+    {
+        try
+        {
+            string helpPath = HelpPageGenerator.Generate(_configPath);
+            Process.Start(new ProcessStartInfo(helpPath) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Failed to open help page");
         }
     }
 
