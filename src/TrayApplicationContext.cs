@@ -12,11 +12,11 @@ public class TrayApplicationContext : ApplicationContext
     private readonly SynchronizationContext _syncContext;
     private readonly string _configPath;
 
-    public TrayApplicationContext(JumpStarterConfig config, string configPath, string iconPath)
+    public TrayApplicationContext(string configPath, string iconPath)
     {
         _configPath = configPath;
         _syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
-        _executor = new CommandExecutor(config);
+        _executor = new CommandExecutor(configPath);
         _executor.OnStatusChanged(UpdateTooltip);
 
         Icon trayIcon = File.Exists(iconPath)

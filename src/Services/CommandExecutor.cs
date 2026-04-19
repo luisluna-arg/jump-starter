@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Text.Json;
 using JumpStarter.Models;
 using Serilog;
 
@@ -9,46 +10,56 @@ public enum CommandStatus { Pending, Running, Done, Failed }
 
 public class CommandExecutor
 {
-    private readonly JumpStarterConfig _config;
-    private readonly SemaphoreSlim _semaphore;
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+    };
+
+    private readonly string _configPath;
     private readonly ConcurrentDictionary<string, CommandStatus> _statuses = new();
     private Action? _onStatusChanged;
 
     public IReadOnlyDictionary<string, CommandStatus> Statuses => _statuses;
 
-    public CommandExecutor(JumpStarterConfig config)
+    public CommandExecutor(string configPath)
     {
-        _config = config;
-        _semaphore = new SemaphoreSlim(Math.Max(1, config.MaxConcurrentTasks));
+        _configPath = configPath;
     }
 
     public void OnStatusChanged(Action callback) => _onStatusChanged = callback;
 
     public async Task ExecuteAllAsync(CancellationToken ct = default)
     {
+        var config = JsonSerializer.Deserialize<JumpStarterConfig>(
+            File.ReadAllText(_configPath), _jsonOptions) ?? new JumpStarterConfig();
+
+        using var semaphore = new SemaphoreSlim(Math.Max(1, config.MaxConcurrentTasks));
+
         _statuses.Clear();
-        foreach (var entry in _config.Commands.Where(e => e.Enabled))
+        foreach (var entry in config.Commands.Where(e => e.Enabled))
             _statuses[entry.Name] = CommandStatus.Pending;
 
         NotifyChanged();
 
         var tasks = new List<Task>();
-        foreach (var entry in _config.Commands.Where(e => e.Enabled))
+        foreach (var entry in config.Commands.Where(e => e.Enabled))
         {
             if (ct.IsCancellationRequested) break;
 
             if (entry.Delay > TimeSpan.Zero)
                 await Task.Delay(entry.Delay, ct);
 
-            tasks.Add(RunCommandAsync(entry, ct));
+            tasks.Add(RunCommandAsync(entry, semaphore, ct));
         }
 
         await Task.WhenAll(tasks);
     }
 
-    private async Task RunCommandAsync(CommandEntry entry, CancellationToken ct)
+    private async Task RunCommandAsync(CommandEntry entry, SemaphoreSlim semaphore, CancellationToken ct)
     {
-        await _semaphore.WaitAsync(ct);
+        await semaphore.WaitAsync(ct);
         try
         {
             _statuses[entry.Name] = CommandStatus.Running;
@@ -70,7 +81,7 @@ public class CommandExecutor
         }
         finally
         {
-            _semaphore.Release();
+            semaphore.Release();
             NotifyChanged();
         }
     }

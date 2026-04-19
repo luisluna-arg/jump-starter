@@ -1,5 +1,3 @@
-using System.Text.Json;
-using JumpStarter.Models;
 using Serilog;
 
 namespace JumpStarter;
@@ -29,20 +27,11 @@ internal static class Program
                 return;
             }
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true,
-            };
-            var config = JsonSerializer.Deserialize<JumpStarterConfig>(
-                File.ReadAllText(configPath), options) ?? new JumpStarterConfig();
-
             string iconPath = Path.Combine(AppContext.BaseDirectory,
                 "assets", "Gemini_Generated_Image_1isa9x1isa9x1isa.png");
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new TrayApplicationContext(config, configPath, iconPath));
+            Application.Run(new TrayApplicationContext(configPath, iconPath));
         }
         catch (Exception ex)
         {
