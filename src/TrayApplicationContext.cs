@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using JumpStarter.Services;
 using JumpStarter.Models;
 
@@ -9,9 +10,11 @@ public class TrayApplicationContext : ApplicationContext
     private readonly CommandExecutor _executor;
     private readonly ToolStripMenuItem _startupMenuItem;
     private readonly SynchronizationContext _syncContext;
+    private readonly string _configPath;
 
-    public TrayApplicationContext(JumpStarterConfig config, string iconPath)
+    public TrayApplicationContext(JumpStarterConfig config, string configPath, string iconPath)
     {
+        _configPath = configPath;
         _syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
         _executor = new CommandExecutor(config);
         _executor.OnStatusChanged(UpdateTooltip);
@@ -27,6 +30,7 @@ public class TrayApplicationContext : ApplicationContext
 
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Ejecutar ahora", null, OnRunNow);
+        contextMenu.Items.Add("Abrir configuración", null, OnOpenConfig);
         contextMenu.Items.Add(new ToolStripSeparator());
         contextMenu.Items.Add(_startupMenuItem);
         contextMenu.Items.Add(new ToolStripSeparator());
@@ -52,6 +56,18 @@ public class TrayApplicationContext : ApplicationContext
     private void OnRunNow(object? sender, EventArgs e)
     {
         _ = _executor.ExecuteAllAsync();
+    }
+
+    private void OnOpenConfig(object? sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(_configPath) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Failed to open config file");
+        }
     }
 
     private void OnToggleStartup(object? sender, EventArgs e)

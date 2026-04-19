@@ -37,7 +37,7 @@ internal static class Program
                 "assets", "Gemini_Generated_Image_1isa9x1isa9x1isa.png");
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new TrayApplicationContext(config, iconPath));
+            Application.Run(new TrayApplicationContext(config, configPath, iconPath));
         }
         catch (Exception ex)
         {
