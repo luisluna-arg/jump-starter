@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JumpStarter — How to use</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; padding: 2rem; }
+    h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
+    h2 { font-size: 1.1rem; margin: 1.75rem 0 0.6rem; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+    p { line-height: 1.6; margin-bottom: 0.75rem; }
+    a { color: #0066cc; word-break: break-all; }
+    a:hover { text-decoration: underline; }
+    code { background: #e8e8e8; padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.88em; font-family: Consolas, monospace; }
+    pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem 1.25rem; border-radius: 6px; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; margin-bottom: 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; font-size: 0.9rem; }
+    th { background: #e0e0e0; text-align: left; padding: 0.5rem 0.75rem; }
+    td { padding: 0.45rem 0.75rem; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+    .config-link { display: inline-block; margin-top: 0.5rem; padding: 0.4rem 0.9rem; background: #0066cc; color: #fff; border-radius: 5px; text-decoration: none; font-size: 0.9rem; }
+    .config-link:hover { background: #0055aa; }
+    .side-by-side { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
+    .side-by-side pre { margin-bottom: 0; height: 100%; }
+    @media (max-width: 700px) { .side-by-side { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>JumpStarter</h1>
+  <p class="subtitle">Windows logon command runner — quick reference</p>
+
+  <div class="card">
+    <h2>Configuration file</h2>
+    <p>All commands are defined in <code>appsettings.json</code>. Click below to open it in your default editor.</p>
+    <a class="config-link" href="{{CONFIG_URL}}">Open appsettings.json</a>
+  </div>
+
+  <div class="card">
+    <h2>Config format</h2>
+    <div class="side-by-side">
+    <pre>{
+  "MaxConcurrentTasks": 5,
+  "Commands": [
+    {
+      "Name": "Open Chrome",
+      "Command": "chrome.exe https://www.google.com",
+      "Delay": "00:00:00",
+      "Shell": false
+    },
+    {
+      "Name": "Maintenance script",
+      "Command": "powershell.exe -NoProfile -File C:\\scripts\\startup.ps1",
+      "Delay": "00:00:10",
+      "Shell": true
+    }
+  ]
+}</pre>
+    <table>
+      <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>MaxConcurrentTasks</code></td><td>number</td><td>Maximum commands running simultaneously. Default: <code>5</code>.</td></tr>
+        <tr><td><code>Name</code></td><td>string</td><td>Short label shown in the tray tooltip.</td></tr>
+        <tr><td><code>Command</code></td><td>string</td><td>Executable and arguments to run.</td></tr>
+        <tr><td><code>Delay</code></td><td><code>hh:mm:ss</code></td><td>Wait time before this command starts. Default: <code>"00:00:00"</code>.</td></tr>
+        <tr><td><code>Shell</code></td><td>boolean</td><td><code>false</code> — launch executable directly, no terminal window.<br><code>true</code> — run via <code>cmd.exe /c</code>, hidden window (use for scripts, pipes). Default: <code>false</code>.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Tray menu</h2>
+    <table>
+      <thead><tr><th>Option</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>Ejecutar ahora</td><td>Runs all commands immediately.</td></tr>
+        <tr><td>Abrir configuración</td><td>Opens <code>appsettings.json</code> in your default editor.</td></tr>
+        <tr><td>Cómo usar</td><td>Opens this help page.</td></tr>
+        <tr><td>Iniciar con Windows</td><td>Registers or removes the Task Scheduler logon entry. Requires admin once (UAC prompt).</td></tr>
+        <tr><td>Salir</td><td>Closes the application.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Tooltip status icons</h2>
+    <table>
+      <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>▶</code></td><td>Command is currently running</td></tr>
+        <tr><td><code>✓</code></td><td>Command completed successfully</td></tr>
+        <tr><td><code>✗</code></td><td>Command failed — check the log at <code>%AppData%\JumpStarter\logs\</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
