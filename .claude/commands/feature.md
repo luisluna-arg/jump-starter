@@ -1,5 +1,5 @@
 ---
-name: new-feature
+name: feature
 description: "Implement a new feature safely: create a feature branch from main, apply changes in logically grouped commits, push, and open a PR. Use when adding new functionality, routes, components, services, or any non-bug-fix work."
 argument-hint: "Describe the feature to implement"
 ---

@@ -1,5 +1,5 @@
 ---
-name: bug-fix
+name: bug
 description: "Fix a bug safely: create a fix branch from main, apply the minimal targeted fix, push, and open a PR. Use when correcting incorrect behavior, crashes, or regressions."
 argument-hint: "Describe the bug and its symptoms"
 ---
